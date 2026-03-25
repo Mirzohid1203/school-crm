@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Users, CalendarCheck, DollarSign, TrendingUp, UserPlus } from "lucide-react";
+import { Student } from "@/types";
+import { Users, CalendarCheck, DollarSign, TrendingUp, Phone } from "lucide-react";
 import { format } from "date-fns";
+import Link from "next/link";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
