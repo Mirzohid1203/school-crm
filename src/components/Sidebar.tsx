@@ -53,12 +53,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="p-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="bg-indigo-600 p-2 rounded-lg">
               <GraduationCap className="text-white w-6 h-6" />
             </div>
             <h1 className="text-xl font-bold text-white tracking-tight">EduFlow CRM</h1>
-          </div>
+          </Link>
           <button onClick={onClose} className="lg:hidden p-2 text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
