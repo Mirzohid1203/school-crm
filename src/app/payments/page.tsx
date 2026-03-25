@@ -58,7 +58,7 @@ export default function PaymentsPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Payments History</h1>
-          <p className="text-slate-500 mt-1 text-sm sm:text-base">Track your center's revenue and transactions.</p>
+          <p className="text-slate-500 mt-1 text-sm sm:text-base">Track your center&apos;s revenue and transactions.</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}

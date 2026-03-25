@@ -26,6 +26,7 @@ export default function LoginPage() {
         toast.success("Account created successfully!");
       }
       router.push("/");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.message || "Authentication failed");
     } finally {
