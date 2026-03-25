@@ -106,22 +106,22 @@ export default function StudentsPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-50 bg-slate-50/50">
-          <div className="relative max-w-sm">
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+        <div className="p-4 sm:p-6 border-b border-slate-50 bg-slate-50/50">
+          <div className="relative w-full sm:max-w-sm">
             <input
               type="text"
               placeholder="Search by name or phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400 text-sm sm:text-base"
             />
-            <Search className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" />
+            <Search className="w-5 h-5 text-slate-400 absolute left-4 top-3" />
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+        <div className="overflow-x-auto scrollbar-hide">
+          <table className="w-full min-w-[600px] text-left">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Student Name</th>
