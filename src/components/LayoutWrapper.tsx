@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
+import Link from "next/link";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -36,12 +37,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       
       <main className="flex-1 flex flex-col min-h-screen lg:ml-64 w-full transition-all duration-300">
         <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/70 backdrop-blur-md px-4 lg:hidden">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="bg-indigo-600 p-1.5 rounded-lg">
               <span className="text-white font-bold text-sm">E</span>
             </div>
             <span className="font-bold text-slate-800 tracking-tight">EduFlow</span>
-          </div>
+          </Link>
           <button 
             onClick={() => setIsSidebarOpen(true)}
             className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
