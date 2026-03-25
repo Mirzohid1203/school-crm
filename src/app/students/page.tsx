@@ -9,7 +9,9 @@ import {
   doc, 
   serverTimestamp, 
   query, 
-  orderBy 
+  orderBy,
+  where,
+  getDocs
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Student } from "@/types";
@@ -45,17 +47,26 @@ export default function StudentsPage() {
     if (!name || !phone) return;
     
     try {
+      // Dublikatni tekshirish (Telefon raqami orqali)
+      const q = query(collection(db, "students"), where("phone", "==", phone));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        toast.error("Ushbu telefon raqamli talaba allaqachon mavjud!");
+        return;
+      }
+
       await addDoc(collection(db, "students"), {
         name,
         phone,
         createdAt: serverTimestamp()
       });
-      toast.success("Student added successfully!");
+      toast.success("Talaba muvaffaqiyatli qo'shildi!");
       setName("");
       setPhone("");
       setIsModalOpen(false);
     } catch (error) {
-      toast.error("Failed to add student");
+      toast.error("Talaba qo'shishda xatolik yuz berdi");
     }
   };
 
