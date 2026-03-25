@@ -34,7 +34,16 @@ export default function RootLayout({
           <LayoutWrapper>
             {children}
           </LayoutWrapper>
-          <Toaster position="top-right" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                borderRadius: "12px",
+                fontWeight: "600",
+                fontSize: "14px",
+              },
+            }}
+          />
         </AuthProvider>
       </body>
     </html>
