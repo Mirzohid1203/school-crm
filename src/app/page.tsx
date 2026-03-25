@@ -14,10 +14,15 @@ export default function Dashboard() {
     todayAttendance: 0,
     totalPayments: 0,
   });
+  const [recentStudents, setRecentStudents] = useState<Student[]>([]);
 
   useEffect(() => {
+    const qStudents = query(collection(db, "students"), orderBy("createdAt", "desc"), limit(5));
     const unsubStudents = onSnapshot(collection(db, "students"), (snapshot) => {
       setStats((prev) => ({ ...prev, totalStudents: snapshot.size }));
+    });
+    const unsubRecent = onSnapshot(qStudents, (snapshot) => {
+      setRecentStudents(snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Student[]);
     });
 
     const today = format(new Date(), "yyyy-MM-dd");
@@ -37,6 +42,7 @@ export default function Dashboard() {
 
     return () => {
       unsubStudents();
+      unsubRecent();
       unsubAttendance();
       unsubPayments();
     };
@@ -97,23 +103,32 @@ export default function Dashboard() {
 
       {/* Bottom Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <div className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">Recent Activity</h2>
-            <button className="text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-tight">View All</button>
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-50">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900">Recent Students</h2>
+            <Link href="/students" className="text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-tight">
+              View All
+            </Link>
           </div>
-          <div className="space-y-4 sm:space-y-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-3 sm:gap-4 group">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:border-indigo-100 group-hover:text-indigo-600 transition-all flex-shrink-0">
-                  <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" />
+          <div className="divide-y divide-slate-50">
+            {recentStudents.length === 0 ? (
+              <p className="text-sm text-slate-400 text-center py-10">No students yet.</p>
+            ) : (
+              recentStudents.map((student) => (
+                <div key={student.id} className="flex items-center gap-3 sm:gap-4 px-6 py-4 hover:bg-slate-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-black text-base flex-shrink-0 group-hover:scale-105 transition-transform">
+                    {student.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-slate-800 truncate">{student.name}</p>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-0.5">
+                      <Phone className="w-3 h-3" />
+                      <span>{student.phone}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-slate-800 truncate">New student enrolled</p>
-                  <p className="text-xs text-slate-400">2 hours ago</p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
