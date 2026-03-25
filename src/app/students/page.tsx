@@ -92,12 +92,26 @@ export default function StudentsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Talabani o'chirishni tasdiqlaysizmi?")) {
+    if (confirm("Talabani o'chirishni tasdiqlaysizmi? Unga tegishli to'lov va davomatlar ham o'chib ketadi!")) {
       try {
+        // 1. To'lovlarni o'chirish
+        const paymentsQuery = query(collection(db, "payments"), where("studentId", "==", id));
+        const paymentDocs = await getDocs(paymentsQuery);
+        const paymentDeletions = paymentDocs.docs.map(d => deleteDoc(doc(db, "payments", d.id)));
+
+        // 2. Davomatlarni o'chirish
+        const attendanceQuery = query(collection(db, "attendance"), where("studentId", "==", id));
+        const attendanceDocs = await getDocs(attendanceQuery);
+        const attendanceDeletions = attendanceDocs.docs.map(d => deleteDoc(doc(db, "attendance", d.id)));
+
+        // Hamma aloqador narsalarni o'chirishni kutish
+        await Promise.all([...paymentDeletions, ...attendanceDeletions]);
+
+        // 3. Oxirida talabani o'zini o'chirish
         await deleteDoc(doc(db, "students", id));
-        toast.success("🗑️ Talaba o'chirildi");
+        toast.success("🗑️ Talaba va barcha ma'lumotlari o'chirildi!");
       } catch {
-        toast.error("O'chirishda xatolik");
+        toast.error("O'chirishda xatolik yuz berdi");
       }
     }
   };
