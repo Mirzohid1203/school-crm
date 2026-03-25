@@ -47,12 +47,16 @@ export default function StudentsPage() {
     if (!name || !phone) return;
     
     try {
-      // Dublikatni tekshirish (Telefon raqami orqali)
-      const q = query(collection(db, "students"), where("phone", "==", phone));
+      // Dublikatni tekshirish (Ham ism, ham telefon raqami bir xil bo'lishi kerak)
+      const q = query(
+        collection(db, "students"), 
+        where("name", "==", name),
+        where("phone", "==", phone)
+      );
       const querySnapshot = await getDocs(q);
       
       if (!querySnapshot.empty) {
-        toast.error("Ushbu telefon raqamli talaba allaqachon mavjud!");
+        toast.error("Bunday ism va telefon raqamli talaba allaqachon mavjud!");
         return;
       }
 
