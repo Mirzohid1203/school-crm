@@ -37,7 +37,7 @@ export default function StudentsPage() {
   const openAddModal = () => {
     setModalMode("add");
     setName("");
-    setPhone("");
+    setPhone("+998 ");
     setEditingStudent(null);
     setIsModalOpen(true);
   };
@@ -60,6 +60,11 @@ export default function StudentsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !phone) return;
+
+    if (name.trim().length < 3) {
+      toast.error("Ism kamida 3 ta harfdan iborat bo'lishi kerak!");
+      return;
+    }
 
     try {
       if (modalMode === "add") {
