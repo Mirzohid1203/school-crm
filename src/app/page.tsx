@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Student } from "@/types";
-import { Users, CalendarCheck, DollarSign, TrendingUp, Phone } from "lucide-react";
+import { Users, CalendarCheck, Banknote, TrendingUp, Phone } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 
@@ -68,7 +68,7 @@ export default function Dashboard() {
     {
       title: "Umumiy tushum",
       value: `${stats.totalPayments.toLocaleString()} so'm`,
-      icon: DollarSign,
+      icon: Banknote,
       light: "bg-purple-50",
       text: "text-purple-600",
       trend: "Barcha vaqtlar",

@@ -6,7 +6,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Payment, Student } from "@/types";
-import { CreditCard, Plus, User, DollarSign, X } from "lucide-react";
+import { CreditCard, Plus, User, Banknote, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 
@@ -145,7 +145,7 @@ export default function PaymentsPage() {
                   <label className="block text-sm font-bold text-slate-700 mb-2">Summa (so&apos;m)</label>
                   <div className="relative">
                     <input required type="number" className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-900" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
-                    <DollarSign className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" />
+                    <Banknote className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" />
                   </div>
                 </div>
                 <button type="submit" className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2">
