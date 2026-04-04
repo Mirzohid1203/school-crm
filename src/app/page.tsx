@@ -50,36 +50,36 @@ export default function Dashboard() {
 
   const cards = [
     {
-      title: "Total Students",
+      title: "Jami talabalar",
       value: stats.totalStudents,
       icon: Users,
       light: "bg-blue-50",
       text: "text-blue-600",
-      trend: "Enrolled",
+      trend: "Ro'yxatdan o'tgan",
     },
     {
-      title: "Today's Attendance",
+      title: "Bugungi davomat",
       value: stats.todayAttendance,
       icon: CalendarCheck,
       light: "bg-green-50",
       text: "text-green-600",
-      trend: "Present today",
+      trend: "Bugun kelganlar",
     },
     {
-      title: "Total Revenue",
-      value: `$${stats.totalPayments.toLocaleString()}`,
+      title: "Umumiy tushum",
+      value: `${stats.totalPayments.toLocaleString()} so'm`,
       icon: DollarSign,
       light: "bg-purple-50",
       text: "text-purple-600",
-      trend: "All time",
+      trend: "Barcha vaqtlar",
     },
   ];
 
   return (
     <div className="space-y-6 animate-fade">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Dashboard Overview</h1>
-        <p className="text-slate-500 mt-1 text-sm sm:text-base">Welcome back! Here&apos;s what&apos;s happening today.</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Boshqaruv paneli</h1>
+        <p className="text-slate-500 mt-1 text-sm sm:text-base">Xush kelibsiz! Bugungi holat bilan tanishing.</p>
       </div>
 
       {/* Stats Cards */}
@@ -102,17 +102,17 @@ export default function Dashboard() {
       </div>
 
       {/* Bottom Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-50">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">Recent Students</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900">Yaqinda qo&apos;shilganlar</h2>
             <Link href="/students" className="text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-tight">
-              View All
+              Hammasini ko&apos;rish
             </Link>
           </div>
           <div className="divide-y divide-slate-50">
             {recentStudents.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-10">No students yet.</p>
+              <p className="text-sm text-slate-400 text-center py-10">Hozircha talabalar yo&apos;q.</p>
             ) : (
               recentStudents.map((student) => (
                 <div key={student.id} className="flex items-center gap-3 sm:gap-4 px-6 py-4 hover:bg-slate-50 transition-colors group">
@@ -130,17 +130,6 @@ export default function Dashboard() {
               ))
             )}
           </div>
-        </div>
-
-        <div className="bg-indigo-600 p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-white relative overflow-hidden flex flex-col justify-between min-h-[200px] sm:min-h-[240px]">
-          <div className="relative z-10">
-            <h2 className="text-xl sm:text-2xl font-black mb-2 tracking-tight">Professional Support</h2>
-            <p className="text-indigo-100/80 text-sm max-w-[200px] leading-relaxed">Upgrade your plan to get advanced analytics and 24/7 priority support.</p>
-          </div>
-          <button className="relative z-10 bg-white text-indigo-600 px-5 py-2.5 rounded-xl font-bold text-sm w-fit mt-4 sm:mt-6 hover:bg-slate-50 transition-colors">
-            Get Pro Now
-          </button>
-          <TrendingUp className="absolute -right-8 -bottom-8 w-48 sm:w-64 h-48 sm:h-64 text-white/5 rotate-12" />
         </div>
       </div>
     </div>

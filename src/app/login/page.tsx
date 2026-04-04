@@ -20,15 +20,15 @@ export default function LoginPage() {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
-        toast.success("Welcome back!");
+        toast.success("Xush kelibsiz!");
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
-        toast.success("Account created successfully!");
+        toast.success("Hisob muvaffaqiyatli yaratildi!");
       }
       router.push("/");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(error.message || "Authentication failed");
+      toast.error(error.message || "Identifikatsiyadan o'tishda xatolik");
     } finally {
       setLoading(false);
     }
@@ -43,14 +43,14 @@ export default function LoginPage() {
           </div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">EduFlow CRM</h1>
           <p className="text-slate-500 mt-2">
-            {isLogin ? "Sign in to manage your center" : "Create a new admin account"}
+            {isLogin ? "Markazingizni boshqarish uchun tizimga kiring" : "Yangi admin hisobini yaratish"}
           </p>
         </div>
 
         <form onSubmit={handleAuth} className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200 border border-slate-100">
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Email manzili</label>
               <div className="relative">
                 <input
                   type="email"
@@ -65,7 +65,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Parol</label>
               <div className="relative">
                 <input
                   type="password"
@@ -89,7 +89,7 @@ export default function LoginPage() {
               ) : (
                 <>
                   {isLogin ? <LogIn className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
-                  {isLogin ? "Sign In" : "Create Account"}
+                  {isLogin ? "Kirish" : "Hisob yaratish"}
                 </>
               )}
             </button>
@@ -101,13 +101,13 @@ export default function LoginPage() {
               onClick={() => setIsLogin(!isLogin)}
               className="text-indigo-600 font-bold hover:text-indigo-700 transition-colors text-sm"
             >
-              {isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
+              {isLogin ? "Hisobingiz yo'qmi? Ro'yxatdan o'ting" : "Hisobingiz bormi? Tizimga kiring"}
             </button>
           </div>
         </form>
         
         <p className="text-center text-slate-400 text-sm mt-8">
-          Professional Education CRM v1.0
+          Professional O&apos;quv CRM v1.0
         </p>
       </div>
     </div>

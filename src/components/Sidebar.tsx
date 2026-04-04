@@ -32,10 +32,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   };
 
   const links = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
-    { name: "Students", href: "/students", icon: Users },
-    { name: "Payments", href: "/payments", icon: CreditCard },
-    { name: "Attendance", href: "/attendance", icon: CalendarCheck },
+    { name: "Boshqaruv", href: "/", icon: LayoutDashboard },
+    { name: "Talabalar", href: "/students", icon: Users },
+    { name: "To'lovlar", href: "/payments", icon: CreditCard },
+    { name: "Davomat", href: "/attendance", icon: CalendarCheck },
   ];
 
   return (
@@ -96,7 +96,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-200 group"
           >
             <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium text-inherit">Logout</span>
+            <span className="font-medium text-inherit">Chiqish</span>
           </button>
         </div>
       </div>

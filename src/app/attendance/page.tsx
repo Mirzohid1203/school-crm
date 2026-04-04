@@ -60,8 +60,8 @@ export default function AttendancePage() {
     <div className="space-y-6 animate-fade">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Daily Attendance</h1>
-        <p className="text-slate-500 mt-1 text-sm sm:text-base">Track and filter student attendance by date.</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Kunlik davomat</h1>
+        <p className="text-slate-500 mt-1 text-sm sm:text-base">Talabalar davomatini sana bo&apos;yicha kuzating va saralang.</p>
       </div>
 
       {/* Filters */}
@@ -78,7 +78,7 @@ export default function AttendancePage() {
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Search students..."
+            placeholder="Talabalarni qidirish..."
             className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-700 bg-white placeholder:text-slate-400 shadow-sm text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -95,18 +95,18 @@ export default function AttendancePage() {
               <Users className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
             </div>
             <div>
-              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Total Students</p>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Jami talabalar</p>
               <p className="text-xl sm:text-2xl font-black text-slate-900">{filteredStudents.length}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-2 rounded-xl border border-green-100 text-xs font-bold uppercase tracking-widest">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              Present: {presentCount}
+              Kelganlar: {presentCount}
             </div>
             <div className="flex items-center gap-2 text-red-600 bg-red-50 px-3 py-2 rounded-xl border border-red-100 text-xs font-bold uppercase tracking-widest">
               <div className="w-2 h-2 rounded-full bg-red-500"></div>
-              Absent: {absentCount}
+              Kelmaganlar: {absentCount}
             </div>
           </div>
         </div>
@@ -114,11 +114,11 @@ export default function AttendancePage() {
         {/* Student Cards Grid */}
         {loading ? (
           <div className="py-20 text-center text-slate-400 text-sm font-bold uppercase tracking-widest">
-            Loading records...
+            Ma&apos;lumotlar yuklanmoqda...
           </div>
         ) : filteredStudents.length === 0 ? (
           <div className="py-20 text-center text-slate-400 text-sm font-bold uppercase tracking-widest">
-            No students found
+            Talabalar topilmadi
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 divide-y sm:divide-y-0 sm:gap-0 divide-slate-100">
@@ -146,7 +146,7 @@ export default function AttendancePage() {
                           ? "bg-green-50 text-green-600 border-green-100"
                           : "bg-red-50 text-red-600 border-red-100"
                       }`}>
-                        {status === "present" ? "✅ Present" : "❌ Absent"}
+                        {status === "present" ? "✅ Keldi" : "❌ Kelmadi"}
                       </span>
                     )}
                   </div>
@@ -162,7 +162,7 @@ export default function AttendancePage() {
                       }`}
                     >
                       <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                      Present
+                      Keldi
                     </button>
                     <button
                       onClick={() => toggleAttendance(student, "absent")}
@@ -173,7 +173,7 @@ export default function AttendancePage() {
                       }`}
                     >
                       <XCircle className="w-4 h-4 flex-shrink-0" />
-                      Absent
+                      Kelmadi
                     </button>
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export default function AttendancePage() {
       <div className="flex items-start gap-3 p-4 sm:p-5 bg-amber-50 rounded-2xl border border-amber-100 text-amber-800">
         <Clock className="w-5 h-5 flex-shrink-0 mt-0.5" />
         <p className="text-xs sm:text-sm font-semibold leading-relaxed">
-          Attendance is tracked per day. Change the date above to view or edit historical records.
+          Davomat kunlik hisoblanadi. O&apos;tgan kunlar davomatini ko&apos;rish yoki tahrirlash uchun yuqoridagi sanani o&apos;zgartiring.
         </p>
       </div>
     </div>

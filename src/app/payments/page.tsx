@@ -57,22 +57,22 @@ export default function PaymentsPage() {
     <div className="space-y-6 animate-fade">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Payments History</h1>
-          <p className="text-slate-500 mt-1 text-sm sm:text-base">Track your center&apos;s revenue and transactions.</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">To&apos;lovlar tarixi</h1>
+          <p className="text-slate-500 mt-1 text-sm sm:text-base">Markazingiz daromadlari va barcha tranzaksiyalarni kuzating.</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
           className="w-full sm:w-auto bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2 group"
         >
           <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-          Record Payment
+          To&apos;lovni qayd etish
         </button>
       </div>
 
       {/* Revenue Card */}
       <div className="bg-indigo-600 p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-white shadow-xl shadow-indigo-200 flex items-center justify-between overflow-hidden relative">
         <div className="relative z-10">
-          <p className="text-indigo-100 font-bold uppercase tracking-widest text-xs mb-1">Total Revenue</p>
+          <p className="text-indigo-100 font-bold uppercase tracking-widest text-xs mb-1">Umumiy daromad</p>
           <p className="text-3xl sm:text-4xl font-black">${totalRevenue.toLocaleString()}</p>
         </div>
         <CreditCard className="w-24 sm:w-32 h-24 sm:h-32 text-white/10 absolute -right-4 top-1/2 -translate-y-1/2 rotate-12" />
@@ -84,16 +84,16 @@ export default function PaymentsPage() {
           <table className="w-full min-w-[500px] text-left">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Student Name</th>
-                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Amount</th>
-                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider hidden sm:table-cell">Date</th>
+                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Talaba ismi</th>
+                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Summa</th>
+                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider hidden sm:table-cell">Sana</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
-                <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">Loading payments...</td></tr>
+                <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">To&apos;lovlar yuklanmoqda...</td></tr>
               ) : payments.length === 0 ? (
-                <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">No payments yet.</td></tr>
+                <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">Hozircha to&apos;lovlar yo&apos;q.</td></tr>
               ) : (
                 payments.map((payment) => (
                   <tr key={payment.id} className="hover:bg-slate-50 transition-colors group">
@@ -109,7 +109,7 @@ export default function PaymentsPage() {
                       ${payment.amount.toLocaleString()}
                     </td>
                     <td className="px-4 sm:px-6 py-4 text-slate-400 text-xs sm:text-sm font-medium hidden sm:table-cell">
-                      {payment.date?.seconds ? format(new Date(payment.date.seconds * 1000), "PPP p") : "Just now"}
+                      {payment.date?.seconds ? format(new Date(payment.date.seconds * 1000), "PPP p") : "Hozirgina"}
                     </td>
                   </tr>
                 ))
@@ -125,24 +125,24 @@ export default function PaymentsPage() {
           <div className="bg-white rounded-t-[2rem] sm:rounded-[2rem] w-full sm:max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="p-6 sm:p-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Record Payment</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">To&apos;lovni qayd etish</h2>
                 <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 p-1">
                   <X className="w-6 h-6" />
                 </button>
               </div>
               <form onSubmit={handleAddPayment} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Select Student</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Talabani tanlang</label>
                   <div className="relative">
                     <select required className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 font-medium appearance-none bg-white text-slate-900" value={studentId} onChange={(e) => setStudentId(e.target.value)}>
-                      <option value="">Choose a student...</option>
+                      <option value="">Talabani tanlang...</option>
                       {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </select>
                     <User className="w-5 h-5 text-slate-400 absolute left-4 top-3.5 pointer-events-none" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Amount ($)</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Summa ($)</label>
                   <div className="relative">
                     <input required type="number" className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-900" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
                     <DollarSign className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" />
@@ -150,7 +150,7 @@ export default function PaymentsPage() {
                 </div>
                 <button type="submit" className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2">
                   <CreditCard className="w-5 h-5" />
-                  Save Payment
+                  To&apos;lovni saqlash
                 </button>
               </form>
             </div>

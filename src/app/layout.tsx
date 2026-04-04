@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "School CRM - Modern Education Management",
-  description: "A professional mini CRM for small education centers.",
+  title: "School CRM - Zamonaviy ta'lim boshqaruvi",
+  description: "Kichik o'quv markazlari uchun professional mini CRM.",
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="uz" className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full bg-slate-50 text-slate-900 border-slate-200`}
       >
