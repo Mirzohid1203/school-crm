@@ -6,7 +6,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Payment, Student } from "@/types";
-import { CreditCard, Plus, User, Banknote, X } from "lucide-react";
+import { CreditCard, Plus, User, Banknote, X, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { Users } from "lucide-react";
@@ -19,6 +19,7 @@ export default function PaymentsPage() {
   const [studentId, setStudentId] = useState("");
   const [amount, setAmount] = useState("");
   const [showUnpaid, setShowUnpaid] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const currentMonth = format(new Date(), "yyyy-MM");
   
@@ -34,8 +35,13 @@ export default function PaymentsPage() {
         : format(new Date(), "yyyy-MM");
       return p.studentId === student.id && paymentDate === currentMonth;
     });
-    return !hasPaidThisMonth;
+    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return !hasPaidThisMonth && matchesSearch;
   });
+
+  const filteredPayments = payments.filter(p => 
+    p.studentName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     const unsubStudents = onSnapshot(collection(db, "students"), (snapshot) => {
@@ -113,10 +119,20 @@ export default function PaymentsPage() {
 
       {/* Table Section */}
       <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="p-4 sm:p-6 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-b border-slate-50 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-lg font-bold text-slate-800">
-            {showUnpaid ? `To'lamagan talabalar (${format(new Date(), "MMMM")})` : "To'lovlar tarixi"}
+            {showUnpaid ? `To'lamaganlar (${format(new Date(), "MMMM")})` : "To'lovlar tarixi"}
           </h2>
+          <div className="relative w-full sm:max-w-xs">
+            <input
+              type="text"
+              placeholder="Ism orqali qidirish..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-400 text-sm"
+            />
+            <Search className="w-5 h-5 text-slate-400 absolute left-4 top-2.5" />
+          </div>
         </div>
         <div className="overflow-x-auto">
           {showUnpaid ? (
@@ -163,10 +179,10 @@ export default function PaymentsPage() {
               <tbody className="divide-y divide-slate-50">
                 {loading ? (
                   <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">To&apos;lovlar yuklanmoqda...</td></tr>
-                ) : payments.length === 0 ? (
-                  <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">Hozircha to&apos;lovlar yo&apos;q.</td></tr>
+                ) : filteredPayments.length === 0 ? (
+                  <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">To'lovlar topilmadi.</td></tr>
                 ) : (
-                  payments.map((payment) => (
+                  filteredPayments.map((payment) => (
                     <tr key={payment.id} className="hover:bg-slate-50 transition-colors group">
                       <td className="px-4 sm:px-6 py-4">
                         <div className="flex items-center gap-2 sm:gap-3">
