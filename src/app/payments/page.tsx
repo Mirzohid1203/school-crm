@@ -17,6 +17,24 @@ export default function PaymentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentId, setStudentId] = useState("");
   const [amount, setAmount] = useState("");
+  const [showUnpaid, setShowUnpaid] = useState(false);
+
+  const currentMonth = format(new Date(), "yyyy-MM");
+  
+  const studentPayments = studentId 
+    ? payments.filter(p => p.studentId === studentId) 
+    : [];
+
+  const unpaidStudents = students.filter(student => {
+    const hasPaidThisMonth = payments.some(p => {
+      if (!p.date) return false;
+      const paymentDate = p.date.seconds 
+        ? format(new Date(p.date.seconds * 1000), "yyyy-MM")
+        : format(new Date(), "yyyy-MM");
+      return p.studentId === student.id && paymentDate === currentMonth;
+    });
+    return !hasPaidThisMonth;
+  });
 
   useEffect(() => {
     const unsubStudents = onSnapshot(collection(db, "students"), (snapshot) => {
@@ -60,13 +78,25 @@ export default function PaymentsPage() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">To&apos;lovlar tarixi</h1>
           <p className="text-slate-500 mt-1 text-sm sm:text-base">Markazingiz daromadlari va barcha tranzaksiyalarni kuzating.</p>
         </div>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="w-full sm:w-auto bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2 group"
-        >
-          <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-          To&apos;lovni qayd etish
-        </button>
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <button 
+            onClick={() => setShowUnpaid(!showUnpaid)}
+            className={`flex-1 sm:flex-none px-5 py-3 rounded-2xl font-bold transition-all border ${
+              showUnpaid 
+                ? "bg-amber-100 text-amber-700 border-amber-200" 
+                : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            {showUnpaid ? "Tarixni ko'rish" : "To'lamaganlar"}
+          </button>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex-1 sm:flex-none bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2 group"
+          >
+            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+            To&apos;lovni qayd etish
+          </button>
+        </div>
       </div>
 
       {/* Revenue Card */}
@@ -78,44 +108,83 @@ export default function PaymentsPage() {
         <CreditCard className="w-24 sm:w-32 h-24 sm:h-32 text-white/10 absolute -right-4 top-1/2 -translate-y-1/2 rotate-12" />
       </div>
 
-      {/* Table */}
+      {/* Table Section */}
       <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="p-4 sm:p-6 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-800">
+            {showUnpaid ? `To'lamagan talabalar (${format(new Date(), "MMMM")})` : "To'lovlar tarixi"}
+          </h2>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[500px] text-left">
-            <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Talaba ismi</th>
-                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Summa</th>
-                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider hidden sm:table-cell">Sana</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {loading ? (
-                <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">To&apos;lovlar yuklanmoqda...</td></tr>
-              ) : payments.length === 0 ? (
-                <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">Hozircha to&apos;lovlar yo&apos;q.</td></tr>
-              ) : (
-                payments.map((payment) => (
-                  <tr key={payment.id} className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-4 sm:px-6 py-4">
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 font-bold border border-slate-100 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-colors flex-shrink-0">
-                          <User className="w-4 h-4" />
+          {showUnpaid ? (
+            <table className="w-full min-w-[500px] text-left">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100">
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Talaba ismi</th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Telefon</th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {unpaidStudents.length === 0 ? (
+                  <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">Hamma to'lov qilgan! 👏</td></tr>
+                ) : (
+                  unpaidStudents.map((student) => (
+                    <tr key={student.id} className="hover:bg-slate-50 transition-colors group">
+                      <td className="px-4 sm:px-6 py-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 font-bold border border-slate-100 group-hover:bg-amber-50 group-hover:text-amber-600 transition-colors flex-shrink-0">
+                            {student.name.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="font-bold text-slate-700 text-sm sm:text-base">{student.name}</span>
                         </div>
-                        <span className="font-bold text-slate-700 text-sm sm:text-base truncate">{payment.studentName}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 sm:px-6 py-4 font-black text-indigo-600 text-sm sm:text-base">
-                      {payment.amount.toLocaleString()} so&apos;m
-                    </td>
-                    <td className="px-4 sm:px-6 py-4 text-slate-400 text-xs sm:text-sm font-medium hidden sm:table-cell">
-                      {payment.date?.seconds ? format(new Date(payment.date.seconds * 1000), "PPP p") : "Hozirgina"}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="px-4 sm:px-6 py-4 text-slate-500 text-sm">{student.phone}</td>
+                      <td className="px-4 sm:px-6 py-4 text-right">
+                        <span className="bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md border border-red-100">To&apos;lamagan</span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <table className="w-full min-w-[500px] text-left">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100">
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Talaba ismi</th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Summa</th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider hidden sm:table-cell">Sana</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {loading ? (
+                  <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">To&apos;lovlar yuklanmoqda...</td></tr>
+                ) : payments.length === 0 ? (
+                  <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-400 text-sm">Hozircha to&apos;lovlar yo&apos;q.</td></tr>
+                ) : (
+                  payments.map((payment) => (
+                    <tr key={payment.id} className="hover:bg-slate-50 transition-colors group">
+                      <td className="px-4 sm:px-6 py-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 font-bold border border-slate-100 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-colors flex-shrink-0">
+                            <User className="w-4 h-4" />
+                          </div>
+                          <span className="font-bold text-slate-700 text-sm sm:text-base truncate">{payment.studentName}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 sm:px-6 py-4 font-black text-indigo-600 text-sm sm:text-base">
+                        {payment.amount.toLocaleString()} so&apos;m
+                      </td>
+                      <td className="px-4 sm:px-6 py-4 text-slate-400 text-xs sm:text-sm font-medium hidden sm:table-cell">
+                        {payment.date?.seconds ? format(new Date(payment.date.seconds * 1000), "PPP p") : "Hozirgina"}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
@@ -140,6 +209,25 @@ export default function PaymentsPage() {
                     </select>
                     <User className="w-5 h-5 text-slate-400 absolute left-4 top-3.5 pointer-events-none" />
                   </div>
+                  
+                  {studentId && (
+                    <div className="mt-3 bg-indigo-50 rounded-xl p-3 border border-indigo-100">
+                      <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">To&apos;lovlar tarixi</p>
+                      {studentPayments.length === 0 ? (
+                        <p className="text-xs text-indigo-600 font-bold">Hali to&apos;lov qilmagan</p>
+                      ) : (
+                        <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+                          <p className="text-xs text-indigo-900 font-bold mb-1">Jami: {studentPayments.length} marta</p>
+                          {studentPayments.map((p) => (
+                            <div key={p.id} className="flex justify-between items-center text-[11px] font-medium text-indigo-700 bg-white/50 px-2 py-1 rounded-md">
+                              <span>{p.date?.seconds ? format(new Date(p.date.seconds * 1000), "dd.MM.yyyy") : "Bugun"}</span>
+                              <span className="font-bold">{p.amount.toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Summa (so&apos;m)</label>
