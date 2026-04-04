@@ -10,11 +10,17 @@ import { db } from "@/lib/firebase";
 import { Student } from "@/types";
 import { UserPlus, Search, Trash2, Phone, User, X, Plus, Pencil } from "lucide-react";
 import toast from "react-hot-toast";
+import { Payment } from "@/types";
+import { format } from "date-fns";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<"all" | "paid" | "unpaid">("all");
+
+  const currentMonth = format(new Date(), "yyyy-MM");
 
   // Modal state — "add" yoki "edit"
   const [modalMode, setModalMode] = useState<"add" | "edit">("add");
@@ -26,13 +32,35 @@ export default function StudentsPage() {
   const [phone, setPhone] = useState("");
 
   useEffect(() => {
-    const q = query(collection(db, "students"), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const qStudents = query(collection(db, "students"), orderBy("createdAt", "desc"));
+    const unsubStudents = onSnapshot(qStudents, (snapshot) => {
       setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Student[]);
+    });
+
+    const unsubPayments = onSnapshot(collection(db, "payments"), (snapshot) => {
+      setPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Payment[]);
       setLoading(false);
     });
-    return () => unsubscribe();
+
+    return () => { unsubStudents(); unsubPayments(); };
   }, []);
+
+  const getStudentStatus = (studentId: string) => {
+    const hasPaid = payments.some(p => {
+      if (!p.date) return false;
+      const paymentDate = p.date.seconds 
+        ? format(new Date(p.date.seconds * 1000), "yyyy-MM")
+        : format(new Date(), "yyyy-MM");
+      return p.studentId === studentId && paymentDate === currentMonth;
+    });
+    return hasPaid ? "paid" : "unpaid";
+  };
+
+  const getStudentHistory = (studentId: string) => {
+    return payments
+      .filter(p => p.studentId === studentId)
+      .sort((a, b) => (b.date?.seconds || 0) - (a.date?.seconds || 0));
+  };
 
   const openAddModal = () => {
     setModalMode("add");
@@ -121,18 +149,22 @@ export default function StudentsPage() {
     }
   };
 
-  const filteredStudents = students.filter(s =>
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.phone.includes(searchTerm)
-  );
+  const filteredStudents = students.filter(s => {
+    const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.phone.includes(searchTerm);
+    const status = getStudentStatus(s.id);
+    if (filterStatus === "all") return matchesSearch;
+    return matchesSearch && status === filterStatus;
+  });
+
+  const stats = {
+    total: students.length,
+    paid: students.filter(s => getStudentStatus(s.id) === "paid").length,
+    unpaid: students.filter(s => getStudentStatus(s.id) === "unpaid").length,
+  };
 
   return (
     <div className="space-y-6 animate-fade">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Talabalar ro&apos;yxati</h1>
-          <p className="text-slate-500 mt-1 text-sm sm:text-base">Barcha ro&apos;yxatga olingan talabalarni bir joyda boshqaring.</p>
-        </div>
         <button
           onClick={openAddModal}
           className="bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 group w-full sm:w-auto justify-center"
@@ -142,9 +174,25 @@ export default function StudentsPage() {
         </button>
       </div>
 
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+          <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-1">Jami talabalar</p>
+          <p className="text-2xl font-black text-slate-900">{stats.total}</p>
+        </div>
+        <div className="bg-green-50 p-5 rounded-3xl border border-green-100 shadow-sm">
+          <p className="text-green-600/60 text-xs font-black uppercase tracking-widest mb-1">To&apos;laganlar</p>
+          <p className="text-2xl font-black text-green-700">{stats.paid}</p>
+        </div>
+        <div className="bg-red-50 p-5 rounded-3xl border border-red-100 shadow-sm">
+          <p className="text-red-600/60 text-xs font-black uppercase tracking-widest mb-1">To&apos;lamaganlar</p>
+          <p className="text-2xl font-black text-red-700">{stats.unpaid}</p>
+        </div>
+      </div>
+
       <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-        {/* Search */}
-        <div className="p-4 sm:p-6 border-b border-slate-50 bg-slate-50/50">
+        {/* Search & Filter */}
+        <div className="p-4 sm:p-6 border-b border-slate-50 bg-slate-50/50 flex flex-col sm:flex-row gap-4 justify-between">
           <div className="relative w-full sm:max-w-sm">
             <input
               type="text"
@@ -155,6 +203,21 @@ export default function StudentsPage() {
             />
             <Search className="w-5 h-5 text-slate-400 absolute left-4 top-3" />
           </div>
+          <div className="flex bg-white p-1 rounded-xl border border-slate-200 w-fit">
+            {(["all", "paid", "unpaid"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilterStatus(s)}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  filterStatus === s 
+                    ? "bg-slate-900 text-white shadow-md" 
+                    : "text-slate-400 hover:text-slate-600"
+                }`}
+              >
+                {s === "all" ? "Hammasi" : s === "paid" ? "To'lagan" : "To'lamagan"}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Table */}
@@ -164,6 +227,7 @@ export default function StudentsPage() {
               <tr className="bg-slate-50/50 border-b border-slate-100">
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">#</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Talaba ismi</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">To&apos;lov holati</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Telefon raqami</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Amallar</th>
               </tr>
@@ -182,8 +246,18 @@ export default function StudentsPage() {
                         <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-black border border-indigo-100 text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
                           {student.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-bold text-slate-700 text-sm">{student.name}</span>
+                        <div>
+                          <span className="font-bold text-slate-700 text-sm block">{student.name}</span>
+                          <span className="text-[10px] text-slate-400 font-medium">Qo'shilgan: {student.createdAt?.seconds ? format(new Date(student.createdAt.seconds * 1000), "dd.MM.yyyy") : ""}</span>
+                        </div>
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {getStudentStatus(student.id) === "paid" ? (
+                        <span className="bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-green-100">To&apos;lagan</span>
+                      ) : (
+                        <span className="bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-red-100">To&apos;lamagan</span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
