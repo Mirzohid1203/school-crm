@@ -73,7 +73,7 @@ export default function PaymentsPage() {
       <div className="bg-indigo-600 p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-white shadow-xl shadow-indigo-200 flex items-center justify-between overflow-hidden relative">
         <div className="relative z-10">
           <p className="text-indigo-100 font-bold uppercase tracking-widest text-xs mb-1">Umumiy daromad</p>
-          <p className="text-3xl sm:text-4xl font-black">${totalRevenue.toLocaleString()}</p>
+          <p className="text-3xl sm:text-4xl font-black">{totalRevenue.toLocaleString()} so&apos;m</p>
         </div>
         <CreditCard className="w-24 sm:w-32 h-24 sm:h-32 text-white/10 absolute -right-4 top-1/2 -translate-y-1/2 rotate-12" />
       </div>
@@ -106,7 +106,7 @@ export default function PaymentsPage() {
                       </div>
                     </td>
                     <td className="px-4 sm:px-6 py-4 font-black text-indigo-600 text-sm sm:text-base">
-                      ${payment.amount.toLocaleString()}
+                      {payment.amount.toLocaleString()} so&apos;m
                     </td>
                     <td className="px-4 sm:px-6 py-4 text-slate-400 text-xs sm:text-sm font-medium hidden sm:table-cell">
                       {payment.date?.seconds ? format(new Date(payment.date.seconds * 1000), "PPP p") : "Hozirgina"}
@@ -142,7 +142,7 @@ export default function PaymentsPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Summa ($)</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Summa (so&apos;m)</label>
                   <div className="relative">
                     <input required type="number" className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-900" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
                     <DollarSign className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" />
