@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  Users, 
-  CreditCard, 
-  CalendarCheck, 
+import {
+  LayoutDashboard,
+  Users,
+  CreditCard,
+  CalendarCheck,
   LogOut,
   GraduationCap,
   X
@@ -42,7 +42,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     <>
       {/* Overlay for mobile */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
           onClick={onClose}
         />
@@ -57,7 +57,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <div className="bg-indigo-600 p-2 rounded-lg">
               <GraduationCap className="text-white w-6 h-6" />
             </div>
-            <h1 className="text-xl font-bold text-white tracking-tight">EduFlow CRM</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight">EduFlow</h1>
           </Link>
           <button onClick={onClose} className="lg:hidden p-2 text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
@@ -75,8 +75,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 onClick={() => onClose()}
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent",
-                  isActive 
-                    ? "bg-indigo-600/10 text-indigo-400 border-indigo-600/20" 
+                  isActive
+                    ? "bg-indigo-600/10 text-indigo-400 border-indigo-600/20"
                     : "hover:bg-slate-800 hover:text-white"
                 )}
               >
