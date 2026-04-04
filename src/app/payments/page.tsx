@@ -9,6 +9,7 @@ import { Payment, Student } from "@/types";
 import { CreditCard, Plus, User, Banknote, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
+import { Users } from "lucide-react";
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -78,23 +79,25 @@ export default function PaymentsPage() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">To&apos;lovlar tarixi</h1>
           <p className="text-slate-500 mt-1 text-sm sm:text-base">Markazingiz daromadlari va barcha tranzaksiyalarni kuzating.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <button 
             onClick={() => setShowUnpaid(!showUnpaid)}
-            className={`flex-1 sm:flex-none px-5 py-3 rounded-2xl font-bold transition-all border ${
+            className={`flex-1 sm:flex-none px-4 sm:px-5 py-3 rounded-2xl font-bold transition-all border flex items-center justify-center gap-2 text-sm sm:text-base ${
               showUnpaid 
                 ? "bg-amber-100 text-amber-700 border-amber-200" 
                 : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
             }`}
           >
-            {showUnpaid ? "Tarixni ko'rish" : "To'lamaganlar"}
+            <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden xs:inline">{showUnpaid ? "Tarix" : "To'lamaganlar"}</span>
+            <span className="xs:hidden">{showUnpaid ? "Tarix" : "Qarzdorlar"}</span>
           </button>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex-1 sm:flex-none bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2 group"
+            className="flex-[1.5] sm:flex-none bg-indigo-600 text-white px-4 sm:px-5 py-3 rounded-2xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2 group text-sm sm:text-base"
           >
-            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-            To&apos;lovni qayd etish
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform" />
+            <span>To&apos;lov</span>
           </button>
         </div>
       </div>
@@ -190,9 +193,9 @@ export default function PaymentsPage() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="bg-white rounded-t-[2rem] sm:rounded-[2rem] w-full sm:max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="p-6 sm:p-8">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2rem] w-full sm:max-w-md shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-6 sm:p-8 overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">To&apos;lovni qayd etish</h2>
                 <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 p-1">
@@ -211,17 +214,19 @@ export default function PaymentsPage() {
                   </div>
                   
                   {studentId && (
-                    <div className="mt-3 bg-indigo-50 rounded-xl p-3 border border-indigo-100">
-                      <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">To&apos;lovlar tarixi</p>
+                    <div className="mt-3 bg-slate-50 rounded-xl p-3 border border-slate-100">
+                      <div className="flex justify-between items-center mb-2">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tarix</p>
+                        <p className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">{studentPayments.length} ta to'lov</p>
+                      </div>
                       {studentPayments.length === 0 ? (
-                        <p className="text-xs text-indigo-600 font-bold">Hali to&apos;lov qilmagan</p>
+                        <p className="text-xs text-slate-400 font-medium">Hali to&apos;lovlar yo&apos;q</p>
                       ) : (
-                        <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
-                          <p className="text-xs text-indigo-900 font-bold mb-1">Jami: {studentPayments.length} marta</p>
+                        <div className="space-y-1 max-h-24 overflow-y-auto pr-1 custom-scrollbar">
                           {studentPayments.map((p) => (
-                            <div key={p.id} className="flex justify-between items-center text-[11px] font-medium text-indigo-700 bg-white/50 px-2 py-1 rounded-md">
+                            <div key={p.id} className="flex justify-between items-center text-[10px] font-bold text-slate-600 px-2 py-1.5 bg-white border border-slate-100 rounded-lg">
                               <span>{p.date?.seconds ? format(new Date(p.date.seconds * 1000), "dd.MM.yyyy") : "Bugun"}</span>
-                              <span className="font-bold">{p.amount.toLocaleString()}</span>
+                              <span className="text-indigo-600">{p.amount.toLocaleString()}</span>
                             </div>
                           ))}
                         </div>
